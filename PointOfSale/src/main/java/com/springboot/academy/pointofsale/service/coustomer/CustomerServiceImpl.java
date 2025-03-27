@@ -1,11 +1,14 @@
 package com.springboot.academy.pointofsale.service.coustomer;
 
 import com.springboot.academy.pointofsale.dto.CustomerDTO;
+import com.springboot.academy.pointofsale.dto.request.CustomerUpdateDTO;
 import com.springboot.academy.pointofsale.entity.Customer;
 import com.springboot.academy.pointofsale.repo.CustomerRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +32,54 @@ public class CustomerServiceImpl implements CustomerService{
         return customerList.stream()
                 .map(this::convertCustomerToDto)
                 .toList();
+    }
+
+    @Override
+    public String updateCustomer(CustomerUpdateDTO customerUpdateDTO) {
+
+        Optional<Customer> customerOptional = customerRepo.findById(customerUpdateDTO.getCustomerId());
+
+        if(customerOptional.isPresent()){
+
+            customerOptional.get().setCustomerName(customerUpdateDTO.getCustomerName());
+            customerOptional.get().setCustomerAddress(customerUpdateDTO.getCustomerAddress());
+            customerOptional.get().setContactNumber(customerUpdateDTO.getContactNumber());
+
+            customerRepo.save(customerOptional.get());
+            return "Customer Details Update Successfully";
+        }else {
+            return "Invalid Customer ID";
+        }
+    }
+
+    @Override
+    public CustomerDTO getCustomerByID(Integer customerId) {
+
+        Optional<Customer> customerOptional = customerRepo.findById(customerId);
+        return customerOptional.map(this::convertCustomerToDto).orElse(null);
+
+    }
+
+    @Override
+    public String deleteCustomer(Integer customerID) {
+
+        Optional<Customer> customerOptional = customerRepo.findById(customerID);
+
+        if(customerOptional.isPresent()){
+            customerRepo.delete(customerOptional.get());
+            return "Customer Deleted Successfully";
+        }else {
+            return "Invalid Customer ID Customer Deleted Not Successfully";
+        }
+    }
+
+    @Override
+    public List<CustomerDTO> getCustomersByStatus(boolean status) {
+
+        List<Customer> customerList = customerRepo.findAllByActiveEquals(status);
+
+        return customerList.stream()
+                .map(this::convertCustomerToDto).toList();
     }
 
     private Customer convertCustomerDtoToCustomer(
@@ -58,3 +109,8 @@ public class CustomerServiceImpl implements CustomerService{
                 .build();
     }
 }
+//        if(customerOptional.isPresent()){
+//            return convertCustomerToDto(customerOptional.get());
+//        }else {
+//            throw new CustomerNotFoundException("Customer Not Found With ID: "+ customerId);
+//        }
