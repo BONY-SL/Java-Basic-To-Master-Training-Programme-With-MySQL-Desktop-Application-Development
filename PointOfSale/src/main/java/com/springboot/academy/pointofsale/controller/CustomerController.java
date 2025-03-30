@@ -2,8 +2,10 @@ package com.springboot.academy.pointofsale.controller;
 
 import com.springboot.academy.pointofsale.dto.CustomerDTO;
 import com.springboot.academy.pointofsale.dto.request.CustomerUpdateDTO;
-import com.springboot.academy.pointofsale.entity.Customer;
+//import com.springboot.academy.pointofsale.exceptions.CustomerNotFoundException;
+//import com.springboot.academy.pointofsale.exceptions.haddlers.CustomExceptionHandler;
 import com.springboot.academy.pointofsale.service.coustomer.CustomerService;
+import com.springboot.academy.pointofsale.util.StandardResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +21,18 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
+    //private final CustomExceptionHandler customExceptionHandler;
+
     @PostMapping("/save")
-    public ResponseEntity<Customer> saveCustomer(@RequestBody CustomerDTO customer){
+    public ResponseEntity<CustomerDTO> saveCustomer(@RequestBody CustomerDTO customer){
         return ResponseEntity.ok(customerService.saveCustomer(customer));
     }
 
     @GetMapping ("/get-all")
-    public ResponseEntity<List<CustomerDTO>> getAllCustomers(){
+    public ResponseEntity<StandardResponse> getAllCustomers(){
 
-        return ResponseEntity.ok(customerService.getAllCustomers());
+        return new ResponseEntity<>(new StandardResponse(200, "Customer found", customerService.getAllCustomers()),
+                HttpStatus.OK);
     }
 
     @PutMapping("/custom-update")
@@ -38,14 +43,24 @@ public class CustomerController {
     @GetMapping(path = "/get-customer-byID"
             ,params = "customerId"
     )
-    public ResponseEntity<?> getCustomerByID(@RequestParam(value = "customerId") Integer customerId){
+    public ResponseEntity<StandardResponse> getCustomerByID(@RequestParam(value = "customerId") Integer customerId){
 
-        CustomerDTO customerDTO = customerService.getCustomerByID(customerId);
-        if(customerDTO != null){
-            return ResponseEntity.ok(customerDTO);
-        }else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer Not Found Invalid ID");
-        }
+//        try {
+            CustomerDTO customerDTO = customerService.getCustomerByID(customerId);
+
+            if(customerDTO != null){
+                return new ResponseEntity<>(new StandardResponse(200, "Customer found", customerDTO),
+                        HttpStatus.OK);
+            }else {
+                return new ResponseEntity<>(new StandardResponse(404, "Customer Not found", null),
+                        HttpStatus.NOT_FOUND);
+            }
+
+//        }catch (CustomerNotFoundException e){
+//            return customExceptionHandler.handleCustomerNotFound(e);
+//        }
+
+
     }
 
     @DeleteMapping(
@@ -71,7 +86,7 @@ public class CustomerController {
 //            return handleCustomerNotFoundException(ex);
 //        }
 
-//    @ExceptionHandler(CustomerNotFoundException.class)
+//    @CustomExceptionHandler(CustomerNotFoundException.class)
 //    public ResponseEntity<?> handleCustomerNotFoundException(CustomerNotFoundException ex) {
 //        // Return a custom error message with a 404 NOT FOUND status
 //        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());

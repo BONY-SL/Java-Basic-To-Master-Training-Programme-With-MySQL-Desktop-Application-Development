@@ -3,12 +3,12 @@ package com.springboot.academy.pointofsale.service.coustomer;
 import com.springboot.academy.pointofsale.dto.CustomerDTO;
 import com.springboot.academy.pointofsale.dto.request.CustomerUpdateDTO;
 import com.springboot.academy.pointofsale.entity.Customer;
+//import com.springboot.academy.pointofsale.exceptions.CustomerNotFoundException;
 import com.springboot.academy.pointofsale.repo.CustomerRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,10 +18,11 @@ public class CustomerServiceImpl implements CustomerService{
     private final CustomerRepo customerRepo;
 
     @Override
-    public Customer saveCustomer(CustomerDTO customerDTO) {
+    public CustomerDTO saveCustomer(CustomerDTO customerDTO) {
 
         Customer customer = convertCustomerDtoToCustomer(customerDTO);
-        return customerRepo.save(customer);
+        customerRepo.save(customer);
+        return convertCustomerToDto(customer);
     }
 
     @Override
@@ -56,6 +57,7 @@ public class CustomerServiceImpl implements CustomerService{
     public CustomerDTO getCustomerByID(Integer customerId) {
 
         Optional<Customer> customerOptional = customerRepo.findById(customerId);
+
         return customerOptional.map(this::convertCustomerToDto).orElse(null);
 
     }

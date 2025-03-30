@@ -35,7 +35,7 @@ public class Item {
     private double sellingPrice;
 
     @Column(name = "available_status")
-    private boolean isAvailable;
+    private boolean available;
 
 
     @Override
@@ -47,7 +47,7 @@ public class Item {
                 ", balanceQty=" + balanceQty +
                 ", supplierPrice=" + supplierPrice +
                 ", sellingPrice=" + sellingPrice +
-                ", isAvailable=" + isAvailable +
+                ", isAvailable=" + available +
                 '}';
     }
 }
