@@ -3,7 +3,7 @@ package com.springboot.academy.pointofsale.service.coustomer;
 import com.springboot.academy.pointofsale.dto.CustomerDTO;
 import com.springboot.academy.pointofsale.dto.request.CustomerUpdateDTO;
 import com.springboot.academy.pointofsale.entity.Customer;
-//import com.springboot.academy.pointofsale.exceptions.CustomerNotFoundException;
+import com.springboot.academy.pointofsale.exceptions.CustomerNotFoundException;
 import com.springboot.academy.pointofsale.repo.CustomerRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +13,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService{
+
 
 
     private final CustomerRepo customerRepo;
@@ -58,7 +59,13 @@ public class CustomerServiceImpl implements CustomerService{
 
         Optional<Customer> customerOptional = customerRepo.findById(customerId);
 
-        return customerOptional.map(this::convertCustomerToDto).orElse(null);
+        //return customerOptional.map(this::convertCustomerToDto).orElse(null);
+
+        if(customerOptional.isPresent()){
+            return convertCustomerToDto(customerOptional.get());
+        }else {
+            throw new CustomerNotFoundException("Customer Not Found With ID: "+ customerId);
+        }
 
     }
 

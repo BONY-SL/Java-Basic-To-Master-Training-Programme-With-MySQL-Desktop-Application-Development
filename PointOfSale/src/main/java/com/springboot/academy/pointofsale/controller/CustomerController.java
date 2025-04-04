@@ -2,8 +2,8 @@ package com.springboot.academy.pointofsale.controller;
 
 import com.springboot.academy.pointofsale.dto.CustomerDTO;
 import com.springboot.academy.pointofsale.dto.request.CustomerUpdateDTO;
-//import com.springboot.academy.pointofsale.exceptions.CustomerNotFoundException;
-//import com.springboot.academy.pointofsale.exceptions.haddlers.CustomExceptionHandler;
+import com.springboot.academy.pointofsale.exceptions.CustomerNotFoundException;
+import com.springboot.academy.pointofsale.exceptions.haddlers.AppWideExceptionHandler;
 import com.springboot.academy.pointofsale.service.coustomer.CustomerService;
 import com.springboot.academy.pointofsale.util.StandardResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    //private final CustomExceptionHandler customExceptionHandler;
+    private final AppWideExceptionHandler appWideExceptionHandler;
 
     @PostMapping("/save")
     public ResponseEntity<CustomerDTO> saveCustomer(@RequestBody CustomerDTO customer){
@@ -45,22 +45,17 @@ public class CustomerController {
     )
     public ResponseEntity<StandardResponse> getCustomerByID(@RequestParam(value = "customerId") Integer customerId){
 
-//        try {
-            CustomerDTO customerDTO = customerService.getCustomerByID(customerId);
+        CustomerDTO customerDTO = customerService.getCustomerByID(customerId);
+        try {
+            return new ResponseEntity<>(new StandardResponse(
+                    200,
+                    "Customer found",
+                    customerDTO),
+                    HttpStatus.OK);
 
-            if(customerDTO != null){
-                return new ResponseEntity<>(new StandardResponse(200, "Customer found", customerDTO),
-                        HttpStatus.OK);
-            }else {
-                return new ResponseEntity<>(new StandardResponse(404, "Customer Not found", null),
-                        HttpStatus.NOT_FOUND);
-            }
-
-//        }catch (CustomerNotFoundException e){
-//            return customExceptionHandler.handleCustomerNotFound(e);
-//        }
-
-
+        }catch (CustomerNotFoundException e){
+            return appWideExceptionHandler.handleCustomerNotFound(e);
+        }
     }
 
     @DeleteMapping(
@@ -86,7 +81,7 @@ public class CustomerController {
 //            return handleCustomerNotFoundException(ex);
 //        }
 
-//    @CustomExceptionHandler(CustomerNotFoundException.class)
+//    @AppWideExceptionHandler(CustomerNotFoundException.class)
 //    public ResponseEntity<?> handleCustomerNotFoundException(CustomerNotFoundException ex) {
 //        // Return a custom error message with a 404 NOT FOUND status
 //        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());

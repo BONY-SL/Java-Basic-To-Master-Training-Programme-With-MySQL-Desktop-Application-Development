@@ -24,4 +24,16 @@ public class ItemDTO {
 
     private boolean available;
 
+    @Override
+    public String toString() {
+        return "ItemDTO{" +
+                "id=" + id +
+                ", itemName='" + itemName + '\'' +
+                ", measuringUnitType=" + measuringUnitType +
+                ", balanceQty=" + balanceQty +
+                ", supplierPrice=" + supplierPrice +
+                ", sellingPrice=" + sellingPrice +
+                ", available=" + available +
+                '}';
+    }
 }

@@ -11,4 +11,5 @@ public class ApplicationBeanConfig {
     public ModelMapper modelMapper(){
         return new ModelMapper();
     }
+
 }

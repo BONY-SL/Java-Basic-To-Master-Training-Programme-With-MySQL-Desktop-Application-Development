@@ -4,10 +4,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class CustomerNotFoundException extends RuntimeException{
+public class ItemNotFound extends RuntimeException{
 
-    public CustomerNotFoundException(String message) {
+    public ItemNotFound(String message) {
         super(message);
     }
-
 }

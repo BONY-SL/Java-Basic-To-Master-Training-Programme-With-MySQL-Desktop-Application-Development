@@ -4,6 +4,8 @@ import com.springboot.academy.pointofsale.entity.enums.MeasuringUnitType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Set;
+
 @Entity(name = "Item")
 @Table(name = "item")
 @Setter
@@ -37,6 +39,8 @@ public class Item {
     @Column(name = "available_status")
     private boolean available;
 
+    @OneToMany(mappedBy = "item")
+    private Set<OrderItem> orderItems;
 
     @Override
     public String toString() {

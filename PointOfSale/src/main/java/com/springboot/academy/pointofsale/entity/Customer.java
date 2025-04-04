@@ -1,10 +1,9 @@
 package com.springboot.academy.pointofsale.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Set;
 
 
 @Entity(name = "Customer")
@@ -34,6 +33,9 @@ public class Customer {
 
     @Column(name = "active_status")
     private boolean isActive;
+
+    @OneToMany(mappedBy = "customer")
+    private Set<Order> orderList;
 
     @Override
     public String toString() {
