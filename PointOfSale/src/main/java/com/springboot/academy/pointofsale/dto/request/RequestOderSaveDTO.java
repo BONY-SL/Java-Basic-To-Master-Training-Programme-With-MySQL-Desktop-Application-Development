@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class RequestOderSaveDTO {
 
-    private Integer id;
     private Integer customer;
     private Date date;
     private Double orderTotalPrice;
@@ -22,7 +21,6 @@ public class RequestOderSaveDTO {
     @Override
     public String toString() {
         return "RequestOderSaveDTO{" +
-                "id=" + id +
                 ", customer=" + customer +
                 ", date=" + date +
                 ", orderTotalPrice=" + orderTotalPrice +

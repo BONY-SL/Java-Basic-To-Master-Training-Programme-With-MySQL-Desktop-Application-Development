@@ -1,6 +1,7 @@
 package com.springboot.academy.pointofsale.controller;
 
 import com.springboot.academy.pointofsale.dto.request.RequestOderSaveDTO;
+import com.springboot.academy.pointofsale.dto.response.PaginatedResponseOrderDetails;
 import com.springboot.academy.pointofsale.service.order.OrderService;
 import com.springboot.academy.pointofsale.util.StandardResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @PostMapping(path = "/save-order")
+    @PostMapping(path = "/save")
     public ResponseEntity<StandardResponse> saveNewOrder(@RequestBody RequestOderSaveDTO requestOderSaveDTO){
 
         boolean isAdded = orderService.saveNewOrder(requestOderSaveDTO);
@@ -37,6 +38,24 @@ public class OrderController {
                             "New Order Not Added Success",
                             null
                     ),HttpStatus.NO_CONTENT
+            );
+        }
+    }
+
+    @GetMapping(path = "/get-orders")
+    public ResponseEntity<StandardResponse> getAllOrderDetails(
+    ){
+        PaginatedResponseOrderDetails responseOrderDetails;
+
+        responseOrderDetails = orderService.getAllOrderDetails();
+
+        if (responseOrderDetails != null){
+            return new ResponseEntity<>(
+                    new StandardResponse(HttpStatus.OK.value(), "OK",responseOrderDetails),HttpStatus.OK
+            );
+        }else {
+            return new ResponseEntity<>(
+                    new StandardResponse(HttpStatus.NOT_FOUND.value(), "Empty List",null),HttpStatus.NOT_FOUND
             );
         }
     }
